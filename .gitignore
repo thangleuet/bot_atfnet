@@ -1,0 +1,7 @@
+env
+*__pycache__*
+train
+test   
+test_results
+results
+checkpoints
