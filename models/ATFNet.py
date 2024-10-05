@@ -110,7 +110,7 @@ class Model(nn.Module):
         super(Model, self).__init__()
         self.configs = configs
 
-        self.harmony_num = 3
+        self.harmony_num = 5
         self.t_model = T_Block(configs)
         self.f_model = F_Block(configs)
 
