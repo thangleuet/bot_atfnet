@@ -47,7 +47,8 @@ class Dataset_Custom(Dataset):
         df_raw.columns: ['date', ...(other features), target feature]
         '''
         cols = list(self.df_raw.columns)
-        cols = ['Open', 'High', 'Low', 'Close']
+        cols = ['Open', 'High', 'Low','volume', 'Close']
+        # cols = ["ema25", "ema7"]
         self.df_raw = self.df_raw[['Date'] + cols]
        
         cols_data = self.df_raw.columns[1:]
@@ -77,8 +78,10 @@ class Dataset_Custom(Dataset):
         self.data_stamp = data_stamp
 
     def __getitem__(self, index):
-        s_begin = index
-        s_end = s_begin + self.seq_len
+        if index < self.seq_len:
+            index = self.seq_len + index
+        s_end = index
+        s_begin = s_end - self.seq_len
         r_begin = s_end - self.label_len
         r_end = r_begin + self.label_len + self.pred_len
 

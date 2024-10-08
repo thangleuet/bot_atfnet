@@ -95,28 +95,26 @@ class Exp_Long_Term_Forecast(Exp_Basic):
                 batch_y = batch_y[:, -self.args.pred_len:, f_dim:].to(self.device)
 
                 loss = criterion(outputs, batch_y)
+                outputs = outputs.detach().cpu().numpy()
+                batch_y = batch_y.detach().cpu().numpy()
 
                 if train_data.scale:
                     shape = outputs.shape
-                    outputs = np.array([train_data.inverse_transform(output.detach().cpu().numpy()) for output in outputs])
-                    true = np.array([train_data.inverse_transform(b_y.detach().cpu().numpy()) for b_y in batch_y])
-                else:
-                    shape = outputs.shape
-                    outputs = np.array([output.detach().cpu().numpy() for output in outputs])
-                    true = np.array([b_y.detach().cpu().numpy() for b_y in batch_y])
+                    outputs = train_data.inverse_transform(outputs.squeeze(0)).reshape(shape)
+                    batch_y = train_data.inverse_transform(batch_y.squeeze(0)).reshape(shape)
 
                 pred = outputs
+                true = batch_y
                 folder_result = f'test_results/{epoch}'
 
                 if not os.path.exists(folder_result):
                     os.makedirs(folder_result)
 
                 if i % 1 == 0:
-                    # input = batch_x.detach().cpu().numpy()
-                    if train_data.scale:
-                        input = np.array([train_data.inverse_transform(b_x.detach().cpu().numpy()) for b_x in batch_x])
-                    else:
-                        input = np.array([b_x.detach().cpu().numpy() for b_x in batch_x])
+                    input = batch_x.detach().cpu().numpy()
+                    if train_data.scale and self.args.inverse:
+                        shape = input.shape
+                        input = train_data.inverse_transform(input.squeeze(0)).reshape(shape)
                     gt = np.concatenate((input[0, :, -1], true[0, :, -1]), axis=0)
                     pd = np.concatenate((input[0, :, -1], pred[0, :, -1]), axis=0)
 
@@ -234,7 +232,7 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             #     break
             torch.save(self.model.state_dict(), path + '/' + f'checkpoint_{epoch + 1}.pth')
 
-            adjust_learning_rate(model_optim, epoch + 1, self.args)
+            # adjust_learning_rate(model_optim, epoch + 1, self.args)
 
             # get_cka(self.args, setting, self.model, train_loader, self.device, epoch)
 

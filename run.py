@@ -19,7 +19,7 @@ if __name__ == '__main__':
                         help='task name, options:[long_term_forecast, short_term_forecast, imputation, classification, anomaly_detection]')
     parser.add_argument('--is_training', type=int,  default=1, help='status')
     parser.add_argument('--model_id', type=str, default='test', help='model id')
-    parser.add_argument('--model', default = 'ATFNet', type=str, help='model name, options: [Autoformer, Transformer, TimesNet]')
+    parser.add_argument('--model', default = 'ATFNet', type=str, help='model name, options: [Autoformer, Transformer]')
 
     # data loader
     parser.add_argument('--data', type=str, default='XAUm5', help='dataset type')
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     # optimization
     parser.add_argument('--num_workers', type=int, default=10, help='data loader num workers')
     parser.add_argument('--itr', type=int, default=1, help='experiments times')
-    parser.add_argument('--train_epochs', type=int, default=20, help='train epochs')
+    parser.add_argument('--train_epochs', type=int, default=50, help='train epochs')
     parser.add_argument('--batch_size', type=int, default=32, help='batch size of train input data')
     parser.add_argument('--patience', type=int, default=10, help='early stopping patience')
     parser.add_argument('--learning_rate', type=float, default=0.0001, help='optimizer learning rate')
